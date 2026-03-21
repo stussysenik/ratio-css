@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ratio.css — Component Showcase</title>
+<link rel="stylesheet" href="../ratio.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0b0b0f;
+    --surface: #14141a;
+    --surface-2: #1c1c24;
+    --border: #2a2a35;
+    --text: #e4e4ec;
+    --text-dim: #6b6b80;
+    --accent: #7c5cfc;
+    --accent-soft: #7c5cfc22;
+    --green: #34d399;
+    --green-soft: #34d39922;
+    --amber: #fbbf24;
+    --amber-soft: #fbbf2422;
+    --red: #f87171;
+    --red-soft: #f8717122;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 0;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: var(--s-4) var(--s-1);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--s-3);
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--s-n2);
+  }
+
+  .page-header p {
+    color: var(--text-dim);
+  }
+
+  .page-header code {
+    background: var(--surface-2);
+    padding: var(--s-n4) var(--s-n2);
+    border-radius: var(--s-n3);
+    font-size: var(--s-n1);
+  }
+
+  section {
+    margin-bottom: var(--s-3);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: var(--s-n2);
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: var(--s-0);
+    font-weight: 500;
+  }
+
+  /* Component-specific colors (ratio.css is color-agnostic) */
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost { background: transparent; color: var(--text-dim); }
+  .btn-ghost:hover { color: var(--text); background: var(--surface-2); }
+
+  .input { color: var(--text); background: var(--surface); border-color: var(--border); }
+  .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .input::placeholder { color: var(--text-dim); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); }
+  .card-body { color: var(--text-dim); }
+
+  .badge-blue { background: var(--accent-soft); color: var(--accent); }
+  .badge-green { background: var(--green-soft); color: var(--green); }
+  .badge-amber { background: var(--amber-soft); color: var(--amber); }
+  .badge-red { background: var(--red-soft); color: var(--red); }
+
+  .alert-info { background: var(--accent-soft); color: var(--accent); border-left-color: var(--accent); }
+  .alert-success { background: var(--green-soft); color: var(--green); border-left-color: var(--green); }
+  .alert-warning { background: var(--amber-soft); color: var(--amber); border-left-color: var(--amber); }
+
+  .avatar { background: var(--accent); color: white; }
+
+  .tabs { border-bottom-color: var(--border); }
+  .tab { color: var(--text-dim); }
+  .tab:hover { color: var(--text); }
+  .tab-active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .breadcrumb { color: var(--text-dim); }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb-current { color: var(--text); }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--s-1);
+  }
+
+  @media (max-width: 768px) {
+    .demo-grid { grid-template-columns: 1fr; }
+  }
+
+  .scale-ruler {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 100px;
+    padding: var(--s-0) 0;
+  }
+
+  .scale-ruler .step {
+    flex: 1;
+    background: var(--accent);
+    opacity: 0.5;
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    min-width: 24px;
+    transition: opacity 0.2s;
+  }
+
+  .scale-ruler .step:hover { opacity: 1; }
+
+  .scale-ruler .step-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .scale-ruler .step-val {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <p class="h1">ratio.css</p>
+  <p class="text-lg mb-3">Two variables. Every dimension. Pure math.</p>
+  <p><code>--base: 1rem</code> &nbsp; <code>--ratio: 1.618 (φ)</code></p>
+</div>
+
+<div class="container">
+
+  <!-- Scale Ruler -->
+  <section>
+    <div class="section-label">Geometric Scale — step(n) = base × ratio<sup>n</sup></div>
+    <div class="scale-ruler" id="scale-ruler"></div>
+    <div style="height: 24px;"></div>
+  </section>
+
+  <!-- Buttons -->
+  <section>
+    <div class="section-label">Button</div>
+    <div class="flex flex-wrap gap-4 items-center mb-5">
+      <button class="btn btn-sm btn-primary">Small</button>
+      <button class="btn btn-primary">Default</button>
+      <button class="btn btn-lg btn-primary">Large</button>
+    </div>
+    <div class="flex flex-wrap gap-4 items-center">
+      <button class="btn btn-primary">Primary</button>
+      <button class="btn btn-outline">Outline</button>
+      <button class="btn btn-ghost">Ghost</button>
+      <button class="btn btn-primary btn-icon">→</button>
+    </div>
+  </section>
+
+  <!-- Inputs -->
+  <section>
+    <div class="section-label">Input</div>
+    <div class="demo-grid">
+      <div>
+        <label class="block text-sm mb-1" style="color: var(--text-dim);">Email</label>
+        <input class="input" placeholder="you@example.com" />
+      </div>
+      <div>
+        <label class="block text-sm mb-1" style="color: var(--text-dim);">Password</label>
+        <input class="input" type="password" placeholder="••••••••" />
+      </div>
+    </div>
+    <div class="flex gap-4 mt-4">
+      <input class="input input-sm" placeholder="Small input" style="max-width: 200px;" />
+      <input class="input input-lg" placeholder="Large input" style="max-width: 300px;" />
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <section>
+    <div class="section-label">Card</div>
+    <div class="demo-grid">
+      <div class="card">
+        <div class="card-title">Proportional Design</div>
+        <div class="card-body">Every dimension on this card — padding, radius, gap, font sizes — derives from x=1rem and y=φ. No magic numbers.</div>
+        <div class="card-footer flex gap-3">
+          <button class="btn btn-sm btn-primary">Learn More</button>
+          <button class="btn btn-sm btn-ghost">Dismiss</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Mathematical Harmony</div>
+        <div class="card-body">Change --ratio on :root and watch everything rescale. Try 1.2 (minor third), 1.25 (major third), or 1.5 (perfect fifth).</div>
+        <div class="card-footer flex gap-3">
+          <span class="badge badge-green">New</span>
+          <span class="badge badge-blue">CSS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Badges -->
+  <section>
+    <div class="section-label">Badge</div>
+    <div class="flex flex-wrap gap-3">
+      <span class="badge badge-blue">Default</span>
+      <span class="badge badge-green">Success</span>
+      <span class="badge badge-amber">Warning</span>
+      <span class="badge badge-red">Error</span>
+    </div>
+  </section>
+
+  <!-- Alerts -->
+  <section>
+    <div class="section-label">Alert</div>
+    <div class="stack">
+      <div class="alert alert-info">
+        <div class="alert-title">Information</div>
+        ratio.css uses CSS custom properties for all scale values.
+      </div>
+      <div class="alert alert-success">
+        <div class="alert-title">Success</div>
+        All dimensions verified against the geometric scale.
+      </div>
+      <div class="alert alert-warning">
+        <div class="alert-title">Note</div>
+        CSS calc() cannot compute sqrt(). The --sqrt-ratio value is pre-computed.
+      </div>
+    </div>
+  </section>
+
+  <!-- Typography -->
+  <section>
+    <div class="section-label">Headings</div>
+    <div class="stack-sm">
+      <div class="h1">Heading 1 — s-5</div>
+      <div class="h2">Heading 2 — s-4</div>
+      <div class="h3">Heading 3 — s-3</div>
+      <div class="h4">Heading 4 — s-2</div>
+      <div class="h5">Heading 5 — s-1</div>
+      <div class="h6">Heading 6 — s-0</div>
+    </div>
+  </section>
+
+  <!-- Avatars -->
+  <section>
+    <div class="section-label">Avatar</div>
+    <div class="flex gap-4 items-center">
+      <div class="avatar avatar-sm">S</div>
+      <div class="avatar">M</div>
+      <div class="avatar avatar-lg">L</div>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <section>
+    <div class="section-label">Tabs</div>
+    <div class="tabs">
+      <button class="tab tab-active">Overview</button>
+      <button class="tab">Components</button>
+      <button class="tab">Scale</button>
+      <button class="tab">API</button>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section>
+    <div class="section-label">Breadcrumb</div>
+    <nav class="breadcrumb">
+      <a href="#">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="#">Components</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Button</span>
+    </nav>
+  </section>
+
+  <!-- Stack + Grid -->
+  <section>
+    <div class="section-label">Stack &amp; Grid</div>
+    <div class="demo-grid">
+      <div>
+        <div class="text-sm mb-3" style="color: var(--text-dim);">Stack (vertical)</div>
+        <div class="stack-sm">
+          <div style="background: var(--surface); padding: var(--s-n1); border-radius: var(--s-n3);">Item 1</div>
+          <div style="background: var(--surface); padding: var(--s-n1); border-radius: var(--s-n3);">Item 2</div>
+          <div style="background: var(--surface); padding: var(--s-n1); border-radius: var(--s-n3);">Item 3</div>
+        </div>
+      </div>
+      <div>
+        <div class="text-sm mb-3" style="color: var(--text-dim);">Grid (2 columns)</div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background: var(--surface); padding: var(--s-n1); border-radius: var(--s-n3);">A</div>
+          <div style="background: var(--surface); padding: var(--s-n1); border-radius: var(--s-n3);">B</div>
+          <div style="background: var(--surface); padding: var(--s-n1); border-radius: var(--s-n3);">C</div>
+          <div style="background: var(--surface); padding: var(--s-n1); border-radius: var(--s-n3);">D</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Render scale ruler
+  const ruler = document.getElementById('scale-ruler');
+  const ratio = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ratio'));
+  const steps = [];
+  for (let n = -4; n <= 9; n++) {
+    steps.push({ n, value: Math.pow(ratio, n) });
+  }
+  const maxVal = steps[steps.length - 1].value;
+  for (const s of steps) {
+    const h = Math.max(6, (Math.log(s.value + 0.5) / Math.log(maxVal + 0.5)) * 90);
+    const label = s.n < 0 ? `n${Math.abs(s.n)}` : `${s.n}`;
+    ruler.innerHTML += `<div class="step" style="height:${h}px"><span class="step-val">${s.value.toFixed(2)}</span><span class="step-label">${label}</span></div>`;
+  }
+</script>
+
+</body>
+</html>

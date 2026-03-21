@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ratio.css — Storybook</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="ratio.css">
+<style>
+  /* ── Layout shell (sidebar + main + control bar positioning) ── */
+  html { scroll-behavior: smooth; }
+  body { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 256px;
+    background: var(--layer-01);
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: var(--s-1) var(--s-0);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .sidebar-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-1);
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    display: block;
+  }
+
+  .sidebar-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n2);
+    color: var(--text-placeholder);
+    margin-top: var(--s-n4);
+    display: block;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: var(--s-n1) 0;
+    list-style: none;
+  }
+
+  .sidebar-nav li { margin: 0; }
+
+  .sidebar-nav a {
+    display: block;
+    padding: var(--s-n2) var(--s-0);
+    font-size: var(--s-n1);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 70ms ease;
+  }
+
+  .sidebar-nav a:hover {
+    color: var(--text-primary);
+    background: var(--layer-02);
+  }
+
+  .sidebar-nav a.active {
+    color: var(--interactive);
+    border-left-color: var(--interactive);
+    background: transparent;
+  }
+
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: var(--s-n2) var(--s-0);
+  }
+
+  /* ── Main content area ── */
+  .main {
+    margin-left: 256px;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* ── Control bar ── */
+  .control-bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--layer-01);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: var(--s-n2) var(--s-1);
+    display: flex;
+    align-items: center;
+    gap: var(--s-1);
+    flex-wrap: wrap;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--s-n2);
+  }
+
+  .control-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-placeholder);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .control-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--interactive);
+    min-width: 52px;
+    font-weight: 500;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--border-subtle);
+    border-radius: 2px;
+    outline: none;
+    width: 120px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--interactive);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--background);
+  }
+
+  .presets {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+
+  .preset-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    background: var(--layer-02);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 70ms ease;
+    white-space: nowrap;
+  }
+
+  .preset-btn:hover {
+    border-color: var(--interactive);
+    color: var(--text-primary);
+  }
+
+  .preset-btn.active {
+    background: rgba(69, 137, 255, 0.15);
+    border-color: var(--interactive);
+    color: var(--interactive);
+  }
+
+  .copy-css-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid var(--interactive);
+    color: var(--interactive);
+    cursor: pointer;
+    transition: all 70ms ease;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .copy-css-btn:hover {
+    background: var(--interactive);
+    color: var(--text-on-color);
+  }
+
+  .copy-css-btn.copied {
+    background: var(--support-success);
+    border-color: var(--support-success);
+    color: var(--text-inverse);
+  }
+
+  /* ── Content sections ── */
+  .content-area {
+    padding: var(--s-2) var(--s-2);
+    max-width: 960px;
+  }
+
+  .component-section {
+    padding-bottom: var(--s-2);
+    margin-bottom: var(--s-2);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .component-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .section-heading {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: var(--s-1);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--s-n2);
+  }
+
+  .scale-formula {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-placeholder);
+    margin-bottom: var(--s-0);
+    line-height: 1.6;
+  }
+
+  .demo-area {
+    padding: var(--s-1);
+    background: var(--layer-01);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: var(--s-n1);
+  }
+
+  .demo-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-placeholder);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--s-n2);
+  }
+
+  .demo-row {
+    margin-bottom: var(--s-n1);
+  }
+
+  .demo-row:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ── Code blocks ── */
+  .code-block {
+    position: relative;
+    margin-top: var(--s-n2);
+  }
+
+  .code-block pre {
+    background: var(--field);
+    border: 1px solid var(--border-subtle);
+    padding: var(--s-n1) var(--s-0);
+    overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .code-copy-btn {
+    position: absolute;
+    top: var(--s-n2);
+    right: var(--s-n2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    background: var(--layer-02);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 70ms ease;
+  }
+
+  .code-copy-btn:hover {
+    border-color: var(--interactive);
+    color: var(--interactive);
+  }
+
+  .code-copy-btn.copied {
+    background: var(--support-success);
+    border-color: var(--support-success);
+    color: var(--text-inverse);
+  }
+
+  /* ── Scale visualization ── */
+  .scale-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 140px;
+    padding: var(--s-0) 0;
+  }
+
+  .scale-bar {
+    flex: 1;
+    background: var(--interactive);
+    opacity: 0.5;
+    border-radius: 2px 2px 0 0;
+    min-width: 24px;
+    position: relative;
+    transition: all 200ms ease;
+    cursor: default;
+  }
+
+  .scale-bar:hover { opacity: 0.9; }
+
+  .scale-bar-tip {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-placeholder);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 100ms;
+  }
+
+  .scale-bar:hover .scale-bar-tip { opacity: 1; }
+
+  .scale-bar-labels {
+    display: flex;
+    gap: 3px;
+  }
+
+  .scale-bar-labels span {
+    flex: 1;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-placeholder);
+    min-width: 24px;
+    padding-top: var(--s-n3);
+  }
+
+  /* ── Values table ── */
+  .values-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    margin-top: var(--s-0);
+  }
+
+  .values-table th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--text-placeholder);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-weight: 500;
+  }
+
+  .values-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+
+  .values-table td:first-child {
+    color: var(--interactive);
+  }
+
+  /* ── Toggle demo ── */
+  .toggle-demo-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-0);
+  }
+
+  .toggle-label-text {
+    font-size: var(--s-n1);
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     Sidebar
+     ════════════════════════════════════════════════════════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <span class="sidebar-brand">ratio.css</span>
+    <span class="sidebar-subtitle">v0.2 &middot; Carbon</span>
+  </div>
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <li><a href="#scale" class="active">Scale</a></li>
+    <li><a href="#configurator">Configurator</a></li>
+    <li><div class="sidebar-divider"></div></li>
+    <li><a href="#button">Button</a></li>
+    <li><a href="#input">Input</a></li>
+    <li><a href="#card">Card</a></li>
+    <li><a href="#tag">Tag</a></li>
+    <li><a href="#notification">Notification</a></li>
+    <li><a href="#avatar">Avatar</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#tabs">Tabs</a></li>
+    <li><a href="#breadcrumb">Breadcrumb</a></li>
+    <li><a href="#toggle">Toggle</a></li>
+    <li><a href="#divider">Divider</a></li>
+  </ul>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     Main
+     ════════════════════════════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- Control Bar -->
+  <div class="control-bar">
+    <div class="control-group">
+      <span class="control-label">Base</span>
+      <input type="range" id="base-slider" min="0.5" max="2" step="0.05" value="1">
+      <span class="control-value" id="base-val">1.00rem</span>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Ratio</span>
+      <input type="range" id="ratio-slider" min="1.1" max="2.0" step="0.001" value="1.618">
+      <span class="control-value" id="ratio-val">1.618</span>
+    </div>
+
+    <div class="presets" id="presets"></div>
+
+    <button class="copy-css-btn" id="copy-css-btn">Copy CSS</button>
+  </div>
+
+  <!-- Content -->
+  <div class="content-area">
+
+    <!-- ── Scale ── -->
+    <section class="component-section" id="scale">
+      <h2 class="section-heading">Scale</h2>
+      <p class="scale-formula">step(n) = base &times; ratio<sup>n</sup> &mdash; 14 steps from --s-n4 through --s-9</p>
+      <div class="scale-bars" id="scale-bars"></div>
+      <div class="scale-bar-labels" id="scale-bar-labels"></div>
+    </section>
+
+    <!-- ── Configurator ── -->
+    <section class="component-section" id="configurator">
+      <h2 class="section-heading">Configurator</h2>
+      <p class="scale-formula">Adjust base and ratio above, or pick a preset. Copy the computed CSS variables to your project.</p>
+      <table class="values-table" id="values-table">
+        <thead>
+          <tr><th>Step</th><th>Formula</th><th>rem</th><th>px (16px)</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- ── Button ── -->
+    <section class="component-section" id="button">
+      <h2 class="section-heading">Button</h2>
+      <p class="scale-formula">padding: --v-pad / --h-pad &times; ratio | font-size: --s-n1 | min-height: --s-0 &times; 3</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Variants</div>
+        <div class="demo-row flex flex-wrap gap-3 items-center">
+          <button class="btn">Primary</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-tertiary">Tertiary</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-danger">Danger</button>
+        </div>
+        <div class="demo-row flex flex-wrap gap-3 items-center mt-4">
+          <div class="demo-label">Sizes</div>
+        </div>
+        <div class="demo-row flex flex-wrap gap-3 items-center">
+          <button class="btn btn-sm">Small</button>
+          <button class="btn">Default</button>
+          <button class="btn btn-lg">Large</button>
+        </div>
+        <div class="demo-row flex flex-wrap gap-3 items-center mt-4">
+          <div class="demo-label">Icon button</div>
+        </div>
+        <div class="demo-row flex flex-wrap gap-3 items-center">
+          <button class="btn btn-icon" title="Icon button">&#x2715;</button>
+          <button class="btn btn-secondary btn-icon" title="Icon button">&#x2630;</button>
+          <button class="btn btn-ghost btn-icon" title="Icon button">&#x2026;</button>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;button class="btn"&gt;Primary&lt;/button&gt;
+&lt;button class="btn btn-secondary"&gt;Secondary&lt;/button&gt;
+&lt;button class="btn btn-tertiary"&gt;Tertiary&lt;/button&gt;
+&lt;button class="btn btn-ghost"&gt;Ghost&lt;/button&gt;
+&lt;button class="btn btn-danger"&gt;Danger&lt;/button&gt;
+
+&lt;button class="btn btn-sm"&gt;Small&lt;/button&gt;
+&lt;button class="btn btn-lg"&gt;Large&lt;/button&gt;
+&lt;button class="btn btn-icon"&gt;&amp;#x2715;&lt;/button&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Input ── -->
+    <section class="component-section" id="input">
+      <h2 class="section-heading">Input</h2>
+      <p class="scale-formula">padding: 0 --s-0 | font-size: --s-n1 | height: --s-0 &times; 2.5</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Sizes</div>
+        <div class="demo-row stack stack-sm" style="max-width: 400px;">
+          <label class="label">Small input</label>
+          <input class="input input-sm" placeholder="Small input">
+        </div>
+        <div class="demo-row stack stack-sm mt-4" style="max-width: 400px;">
+          <label class="label">Default input</label>
+          <input class="input" placeholder="Default input">
+        </div>
+        <div class="demo-row stack stack-sm mt-4" style="max-width: 400px;">
+          <label class="label">Large input</label>
+          <input class="input input-lg" placeholder="Large input">
+        </div>
+        <div class="demo-row stack stack-sm mt-4" style="max-width: 400px;">
+          <label class="label">With value</label>
+          <input class="input" value="ratio.css">
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;label class="label"&gt;Label text&lt;/label&gt;
+&lt;input class="input" placeholder="Default input"&gt;
+
+&lt;input class="input input-sm" placeholder="Small"&gt;
+&lt;input class="input input-lg" placeholder="Large"&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Card ── -->
+    <section class="component-section" id="card">
+      <h2 class="section-heading">Card</h2>
+      <p class="scale-formula">padding: --s-0 | gap: --s-0 | card-body font-size: --s-n1</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Default card with all sections</div>
+        <div class="demo-row grid grid-cols-2 gap-4">
+          <div class="card">
+            <div class="card-title">Card title</div>
+            <div class="card-body">Every dimension derives from step(n) = base &times; ratio<sup>n</sup>. Two variables control all sizing.</div>
+            <div class="card-footer flex gap-2 items-center">
+              <button class="btn btn-sm">Action</button>
+              <button class="btn btn-ghost btn-sm">Cancel</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Hover state</div>
+            <div class="card-body">Hover over this card to see the background transition from --layer-01 to --layer-02.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;div class="card"&gt;
+  &lt;div class="card-title"&gt;Card title&lt;/div&gt;
+  &lt;div class="card-body"&gt;Body text here.&lt;/div&gt;
+  &lt;div class="card-footer"&gt;
+    &lt;button class="btn btn-sm"&gt;Action&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Tag ── -->
+    <section class="component-section" id="tag">
+      <h2 class="section-heading">Tag</h2>
+      <p class="scale-formula">padding: --s-n4 / --s-n2 | font-size: --s-n2 | min-height: --s-0 &times; 1.5</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Color variants</div>
+        <div class="demo-row flex flex-wrap gap-3 items-center">
+          <span class="tag">Default</span>
+          <span class="tag tag-blue">Blue</span>
+          <span class="tag tag-green">Green</span>
+          <span class="tag tag-red">Red</span>
+          <span class="tag tag-purple">Purple</span>
+          <span class="tag tag-teal">Teal</span>
+        </div>
+        <div class="demo-row flex flex-wrap gap-3 items-center mt-4">
+          <span class="tag tag-blue">v0.2</span>
+          <span class="tag tag-green">Stable</span>
+          <span class="tag tag-purple">CSS</span>
+          <span class="tag tag-teal">Geometric</span>
+          <span class="tag tag-red">Breaking</span>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;span class="tag"&gt;Default&lt;/span&gt;
+&lt;span class="tag tag-blue"&gt;Blue&lt;/span&gt;
+&lt;span class="tag tag-green"&gt;Green&lt;/span&gt;
+&lt;span class="tag tag-red"&gt;Red&lt;/span&gt;
+&lt;span class="tag tag-purple"&gt;Purple&lt;/span&gt;
+&lt;span class="tag tag-teal"&gt;Teal&lt;/span&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Notification ── -->
+    <section class="component-section" id="notification">
+      <h2 class="section-heading">Notification</h2>
+      <p class="scale-formula">padding: --s-n1 / --s-0 | font-size: --s-n1 | border-left: 3px</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Variants</div>
+        <div class="demo-row stack gap-3">
+          <div class="notification">
+            <div>
+              <div class="notification-title">Informational</div>
+              Scale values update in real-time as you adjust the base and ratio sliders.
+            </div>
+          </div>
+          <div class="notification notification-success">
+            <div>
+              <div class="notification-title">Success</div>
+              Configuration saved. CSS variables have been copied to your clipboard.
+            </div>
+          </div>
+          <div class="notification notification-warning">
+            <div>
+              <div class="notification-title">Warning</div>
+              Ratios below 1.2 may produce insufficient contrast between scale steps.
+            </div>
+          </div>
+          <div class="notification notification-error">
+            <div>
+              <div class="notification-title">Error</div>
+              Invalid ratio value. Please use a number between 1.1 and 2.0.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;div class="notification"&gt;
+  &lt;div&gt;
+    &lt;div class="notification-title"&gt;Informational&lt;/div&gt;
+    Message body text here.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="notification notification-success"&gt;...&lt;/div&gt;
+&lt;div class="notification notification-warning"&gt;...&lt;/div&gt;
+&lt;div class="notification notification-error"&gt;...&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Avatar ── -->
+    <section class="component-section" id="avatar">
+      <h2 class="section-heading">Avatar</h2>
+      <p class="scale-formula">width/height: --s-3 | font-size: --s-0 | sm: --s-2 | lg: --s-4</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Sizes</div>
+        <div class="demo-row flex gap-4 items-center">
+          <div class="avatar avatar-sm">S</div>
+          <div class="avatar">M</div>
+          <div class="avatar avatar-lg">L</div>
+        </div>
+        <div class="demo-row flex gap-4 items-center mt-4">
+          <div class="demo-label">With names</div>
+        </div>
+        <div class="demo-row flex gap-4 items-center">
+          <div class="flex gap-3 items-center">
+            <div class="avatar avatar-sm">JD</div>
+            <span class="text-sm" style="color: var(--text-secondary);">Jane Doe</span>
+          </div>
+          <div class="flex gap-3 items-center">
+            <div class="avatar">AB</div>
+            <span class="text-sm" style="color: var(--text-secondary);">Alex Brown</span>
+          </div>
+          <div class="flex gap-3 items-center">
+            <div class="avatar avatar-lg">RC</div>
+            <span class="text-sm" style="color: var(--text-secondary);">Riley Chen</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;div class="avatar avatar-sm"&gt;S&lt;/div&gt;
+&lt;div class="avatar"&gt;M&lt;/div&gt;
+&lt;div class="avatar avatar-lg"&gt;L&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Typography ── -->
+    <section class="component-section" id="typography">
+      <h2 class="section-heading">Typography</h2>
+      <p class="scale-formula">h1: --s-5 | h2: --s-4 | h3: --s-3 | h4: --s-2 | h5: --s-1 | h6: --s-0</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Heading scale</div>
+        <div class="demo-row stack stack-sm">
+          <div class="h1">h1 &mdash; Heading One <span class="tag tag-blue" style="vertical-align: middle;">--s-5</span></div>
+          <div class="h2">h2 &mdash; Heading Two <span class="tag tag-blue" style="vertical-align: middle;">--s-4</span></div>
+          <div class="h3">h3 &mdash; Heading Three <span class="tag tag-blue" style="vertical-align: middle;">--s-3</span></div>
+          <div class="h4">h4 &mdash; Heading Four <span class="tag tag-blue" style="vertical-align: middle;">--s-2</span></div>
+          <div class="h5">h5 &mdash; Heading Five <span class="tag tag-blue" style="vertical-align: middle;">--s-1</span></div>
+          <div class="h6">h6 &mdash; Heading Six <span class="tag tag-blue" style="vertical-align: middle;">--s-0</span></div>
+        </div>
+        <div class="demo-row mt-5">
+          <div class="demo-label">Text sizes</div>
+        </div>
+        <div class="demo-row stack stack-sm">
+          <p class="text-xs" style="color: var(--text-secondary);">text-xs &mdash; Caption or fine print (--s-n3)</p>
+          <p class="text-sm" style="color: var(--text-secondary);">text-sm &mdash; Secondary text (--s-n2)</p>
+          <p class="text-base" style="color: var(--text-secondary);">text-base &mdash; Body text (--s-0)</p>
+          <p class="text-lg" style="color: var(--text-secondary);">text-lg &mdash; Large body (--s-1)</p>
+          <p class="text-xl" style="color: var(--text-secondary);">text-xl &mdash; Subheading (--s-2)</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;h1 class="h1"&gt;Heading One&lt;/h1&gt;
+&lt;h2 class="h2"&gt;Heading Two&lt;/h2&gt;
+&lt;h3 class="h3"&gt;Heading Three&lt;/h3&gt;
+&lt;h4 class="h4"&gt;Heading Four&lt;/h4&gt;
+&lt;h5 class="h5"&gt;Heading Five&lt;/h5&gt;
+&lt;h6 class="h6"&gt;Heading Six&lt;/h6&gt;
+
+&lt;p class="text-xs"&gt;Extra small&lt;/p&gt;
+&lt;p class="text-sm"&gt;Small&lt;/p&gt;
+&lt;p class="text-base"&gt;Base&lt;/p&gt;
+&lt;p class="text-lg"&gt;Large&lt;/p&gt;
+&lt;p class="text-xl"&gt;Extra large&lt;/p&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Stack ── -->
+    <section class="component-section" id="stack">
+      <h2 class="section-heading">Stack</h2>
+      <p class="scale-formula">gap: --s-0 (default) | --s-n1 (sm) | --s-1 (lg)</p>
+
+      <div class="demo-area">
+        <div class="demo-row grid grid-cols-3 gap-5">
+          <div>
+            <div class="demo-label">stack-sm (--s-n1)</div>
+            <div class="stack stack-sm">
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 1</div>
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 2</div>
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 3</div>
+            </div>
+          </div>
+          <div>
+            <div class="demo-label">stack (--s-0)</div>
+            <div class="stack">
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 1</div>
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 2</div>
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 3</div>
+            </div>
+          </div>
+          <div>
+            <div class="demo-label">stack-lg (--s-1)</div>
+            <div class="stack stack-lg">
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 1</div>
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 2</div>
+              <div class="p-3" style="background: var(--layer-02); color: var(--text-secondary); font-size: var(--s-n1);">Item 3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;div class="stack"&gt;
+  &lt;div&gt;Item 1&lt;/div&gt;
+  &lt;div&gt;Item 2&lt;/div&gt;
+  &lt;div&gt;Item 3&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="stack stack-sm"&gt;...&lt;/div&gt;
+&lt;div class="stack stack-lg"&gt;...&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Tabs ── -->
+    <section class="component-section" id="tabs">
+      <h2 class="section-heading">Tabs</h2>
+      <p class="scale-formula">padding: --s-n2 / --s-0 | font-size: --s-n1 | border-bottom: 2px</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Interactive tabs (click to switch)</div>
+        <div class="demo-row">
+          <div class="tabs" id="demo-tabs">
+            <button class="tab tab-active" onclick="switchTab(this)">Overview</button>
+            <button class="tab" onclick="switchTab(this)">Usage</button>
+            <button class="tab" onclick="switchTab(this)">API</button>
+            <button class="tab" onclick="switchTab(this)">Examples</button>
+          </div>
+          <div class="p-4" style="background: var(--layer-02);">
+            <p class="text-sm" style="color: var(--text-secondary);" id="tab-content">Tab content area. Click the tabs above to switch the active state.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;div class="tabs"&gt;
+  &lt;button class="tab tab-active"&gt;Overview&lt;/button&gt;
+  &lt;button class="tab"&gt;Usage&lt;/button&gt;
+  &lt;button class="tab"&gt;API&lt;/button&gt;
+  &lt;button class="tab"&gt;Examples&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Breadcrumb ── -->
+    <section class="component-section" id="breadcrumb">
+      <h2 class="section-heading">Breadcrumb</h2>
+      <p class="scale-formula">gap: --s-n2 | font-size: --s-n1</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Default breadcrumb</div>
+        <div class="demo-row">
+          <nav class="breadcrumb">
+            <a href="#">Home</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="#">Components</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">Breadcrumb</span>
+          </nav>
+        </div>
+        <div class="demo-row mt-4">
+          <nav class="breadcrumb">
+            <a href="#">Dashboard</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="#">Settings</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="#">Theme</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">Scale</span>
+          </nav>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;nav class="breadcrumb"&gt;
+  &lt;a href="#"&gt;Home&lt;/a&gt;
+  &lt;span class="breadcrumb-sep"&gt;/&lt;/span&gt;
+  &lt;a href="#"&gt;Components&lt;/a&gt;
+  &lt;span class="breadcrumb-sep"&gt;/&lt;/span&gt;
+  &lt;span class="breadcrumb-current"&gt;Breadcrumb&lt;/span&gt;
+&lt;/nav&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Toggle ── -->
+    <section class="component-section" id="toggle">
+      <h2 class="section-heading">Toggle</h2>
+      <p class="scale-formula">width: --s-0 &times; 3 | height: --s-0 &times; 1.5 | knob: height &minus; 6px</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Interactive toggles (click to switch)</div>
+        <div class="demo-row stack gap-4">
+          <div class="toggle-demo-row">
+            <button class="toggle" onclick="toggleSwitch(this)"></button>
+            <span class="toggle-label-text">Inactive toggle</span>
+          </div>
+          <div class="toggle-demo-row">
+            <button class="toggle toggle-active" onclick="toggleSwitch(this)"></button>
+            <span class="toggle-label-text">Active toggle</span>
+          </div>
+          <div class="toggle-demo-row">
+            <button class="toggle" onclick="toggleSwitch(this)"></button>
+            <span class="toggle-label-text">Dark mode</span>
+          </div>
+          <div class="toggle-demo-row">
+            <button class="toggle toggle-active" onclick="toggleSwitch(this)"></button>
+            <span class="toggle-label-text">Notifications</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;button class="toggle"&gt;&lt;/button&gt;
+&lt;button class="toggle toggle-active"&gt;&lt;/button&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ── Divider ── -->
+    <section class="component-section" id="divider">
+      <h2 class="section-heading">Divider</h2>
+      <p class="scale-formula">border-top: 1px solid --border-subtle | margin: --s-0 0</p>
+
+      <div class="demo-area">
+        <div class="demo-label">Horizontal divider</div>
+        <div class="demo-row">
+          <p class="text-sm" style="color: var(--text-secondary);">Content above the divider</p>
+          <hr class="divider">
+          <p class="text-sm" style="color: var(--text-secondary);">Content below the divider</p>
+          <hr class="divider">
+          <p class="text-sm" style="color: var(--text-secondary);">Another section of content</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>&lt;hr class="divider"&gt;</code></pre>
+      </div>
+    </section>
+
+  </div><!-- /content-area -->
+</div><!-- /main -->
+
+<script>
+// ── Presets ──
+const PRESETS = {
+  '\u03C6': 1.618033988749895,
+  '\u221A2': 1.4142135623730951,
+  'Min 3rd': 1.2,
+  'Maj 3rd': 1.25,
+  '4th': 1.3333333333333333,
+  '5th': 1.5,
+};
+
+// ── DOM refs ──
+const baseSlider = document.getElementById('base-slider');
+const ratioSlider = document.getElementById('ratio-slider');
+const baseVal = document.getElementById('base-val');
+const ratioVal = document.getElementById('ratio-val');
+const presetsEl = document.getElementById('presets');
+const copyCssBtn = document.getElementById('copy-css-btn');
+const scaleBars = document.getElementById('scale-bars');
+const scaleBarLabels = document.getElementById('scale-bar-labels');
+const valuesTableBody = document.getElementById('values-table').querySelector('tbody');
+
+// ── Build preset buttons ──
+for (const [name, value] of Object.entries(PRESETS)) {
+  const btn = document.createElement('button');
+  btn.className = 'preset-btn' + (Math.abs(value - 1.618) < 0.01 ? ' active' : '');
+  btn.textContent = name;
+  btn.onclick = () => {
+    ratioSlider.value = value;
+    update();
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+  presetsEl.appendChild(btn);
+}
+
+// ── Main update ──
+function update() {
+  const base = parseFloat(baseSlider.value);
+  const ratio = parseFloat(ratioSlider.value);
+  const sqrtRatio = Math.sqrt(ratio);
+
+  baseVal.textContent = base.toFixed(2) + 'rem';
+  ratioVal.textContent = ratio.toFixed(3);
+
+  // Update CSS custom properties on :root
+  const root = document.documentElement.style;
+  root.setProperty('--base', base + 'rem');
+  root.setProperty('--ratio', ratio);
+  root.setProperty('--sqrt-ratio', sqrtRatio);
+
+  // Update preset active state
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    const presetVal = PRESETS[btn.textContent];
+    if (presetVal !== undefined && Math.abs(presetVal - ratio) < 0.005) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Build scale steps data
+  const steps = [];
+  for (let n = -4; n <= 9; n++) {
+    steps.push({ n, value: base * Math.pow(ratio, n) });
+  }
+  const maxVal = steps[steps.length - 1].value;
+
+  // Render scale bars
+  scaleBars.innerHTML = steps.map(s => {
+    const h = Math.max(8, (Math.log(s.value + 0.5) / Math.log(maxVal + 0.5)) * 120);
+    return '<div class="scale-bar" style="height:' + h + 'px"><span class="scale-bar-tip">' + s.value.toFixed(3) + 'rem</span></div>';
+  }).join('');
+
+  // Render scale labels
+  scaleBarLabels.innerHTML = steps.map(s => {
+    const label = s.n < 0 ? 'n' + Math.abs(s.n) : '' + s.n;
+    return '<span>' + label + '</span>';
+  }).join('');
+
+  // Render values table
+  valuesTableBody.innerHTML = steps.map(s => {
+    const varName = s.n < 0 ? '--s-n' + Math.abs(s.n) : '--s-' + s.n;
+    const formula = s.n === 0 ? 'base' : s.n > 0 ? 'base \u00D7 ratio^' + s.n : 'base / ratio^' + Math.abs(s.n);
+    return '<tr><td>' + varName + '</td><td>' + formula + '</td><td>' + s.value.toFixed(4) + '</td><td>' + (s.value * 16).toFixed(1) + 'px</td></tr>';
+  }).join('');
+}
+
+// ── Copy CSS to clipboard ──
+copyCssBtn.onclick = () => {
+  const base = parseFloat(baseSlider.value);
+  const ratio = parseFloat(ratioSlider.value);
+  const sqrtRatio = Math.sqrt(ratio);
+
+  const css = ':root {\n  --base: ' + base + 'rem;\n  --ratio: ' + ratio + ';\n  --sqrt-ratio: ' + sqrtRatio.toFixed(6) + ';\n}\n';
+
+  navigator.clipboard.writeText(css).then(() => {
+    copyCssBtn.textContent = 'Copied!';
+    copyCssBtn.classList.add('copied');
+    setTimeout(() => {
+      copyCssBtn.textContent = 'Copy CSS';
+      copyCssBtn.classList.remove('copied');
+    }, 2000);
+  });
+};
+
+// ── Copy code snippet ──
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+// ── Tab switching ──
+function switchTab(clickedTab) {
+  const tabs = clickedTab.parentElement.querySelectorAll('.tab');
+  tabs.forEach(t => t.classList.remove('tab-active'));
+  clickedTab.classList.add('tab-active');
+
+  const content = document.getElementById('tab-content');
+  if (content) {
+    const tabTexts = {
+      'Overview': 'Tab content area. Click the tabs above to switch the active state.',
+      'Usage': 'Import ratio.css and apply component classes directly to your HTML elements.',
+      'API': 'All components use --base and --ratio custom properties. Adjust them to rescale everything.',
+      'Examples': 'See the component sections below for live examples of every variant.',
+    };
+    content.textContent = tabTexts[clickedTab.textContent] || 'Tab content for ' + clickedTab.textContent;
+  }
+}
+
+// ── Toggle switching ──
+function toggleSwitch(btn) {
+  btn.classList.toggle('toggle-active');
+  const label = btn.nextElementSibling;
+  if (label && label.classList.contains('toggle-label-text')) {
+    // Update adjacent label text state indicator if desired
+  }
+}
+
+// ── Sidebar active link tracking ──
+function updateSidebarActive() {
+  const sections = document.querySelectorAll('.component-section[id]');
+  const links = document.querySelectorAll('.sidebar-nav a');
+  let current = '';
+
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= 100) {
+      current = section.id;
+    }
+  });
+
+  links.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// ── Event listeners ──
+baseSlider.oninput = update;
+ratioSlider.oninput = update;
+window.addEventListener('scroll', updateSidebarActive, { passive: true });
+
+// ── Initial render ──
+update();
+</script>
+</body>
+</html>

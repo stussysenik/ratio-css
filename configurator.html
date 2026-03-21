@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ratio.css — Configurator</title>
+<link rel="stylesheet" href="ratio.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #08080a;
+    --surface: #111115;
+    --surface-2: #1a1a20;
+    --border: #28283a;
+    --text: #e8e8f0;
+    --dim: #6a6a82;
+    --gold: #d4a017;
+    --gold-soft: #d4a01722;
+    --cyan: #22d3ee;
+    --green: #34d399;
+    --accent: #7c5cfc;
+    --accent-soft: #7c5cfc22;
+    --red: #f87171;
+    --red-soft: #f8717122;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* Scanline */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── Control Panel ── */
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    backdrop-filter: blur(12px);
+  }
+
+  .controls-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .controls-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: -0.5px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .control-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+  }
+
+  .control-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    min-width: 48px;
+    font-weight: 500;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    width: 140px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--gold);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--bg);
+  }
+
+  .presets {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .preset-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--dim);
+    cursor: pointer;
+    transition: all 150ms ease;
+    white-space: nowrap;
+  }
+
+  .preset-btn:hover { border-color: var(--gold); color: var(--text); }
+  .preset-btn.active { background: var(--gold-soft); border-color: var(--gold); color: var(--gold); }
+
+  .copy-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    cursor: pointer;
+    transition: all 150ms ease;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .copy-btn:hover { background: var(--cyan); color: var(--bg); }
+  .copy-btn.copied { background: var(--green); border-color: var(--green); color: var(--bg); }
+
+  /* ── Content ── */
+  .content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--s-2) 24px;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--s-0);
+  }
+
+  section { margin-bottom: var(--s-3); }
+
+  /* Scale ruler */
+  .scale-display {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 100px;
+    padding: var(--s-0) 0;
+    margin-bottom: var(--s-n1);
+  }
+
+  .scale-step {
+    flex: 1;
+    background: var(--gold);
+    opacity: 0.4;
+    border-radius: 2px 2px 0 0;
+    min-width: 20px;
+    position: relative;
+    transition: all 300ms ease;
+    cursor: help;
+  }
+
+  .scale-step:hover { opacity: 0.9; }
+
+  .scale-step .tip {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: var(--dim);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+
+  .scale-step:hover .tip { opacity: 1; }
+
+  .scale-labels {
+    display: flex;
+    gap: 3px;
+  }
+
+  .scale-labels span {
+    flex: 1;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--dim);
+    min-width: 20px;
+  }
+
+  /* Values table */
+  .values-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    margin-top: var(--s-0);
+  }
+
+  .values-table th {
+    text-align: left;
+    padding: 6px 12px;
+    color: var(--dim);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  .values-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .values-table td:first-child { color: var(--gold); }
+
+  /* Component styles */
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-outline-demo { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost-demo { background: transparent; color: var(--dim); }
+
+  .input { color: var(--text); background: var(--surface); border-color: var(--border); }
+  .input::placeholder { color: var(--dim); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); }
+  .card-body { color: var(--dim); }
+
+  .badge-demo { background: var(--accent-soft); color: var(--accent); }
+  .badge-green { background: rgba(52,211,153,0.13); color: var(--green); }
+
+  .alert-demo { background: var(--accent-soft); color: var(--accent); border-left-color: var(--accent); }
+
+  .avatar { background: var(--accent); color: white; }
+
+  .tabs { border-bottom-color: var(--border); }
+  .tab { color: var(--dim); }
+  .tab-active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .breadcrumb { color: var(--dim); }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-1);
+  }
+
+  @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ── Controls ── -->
+<div class="controls">
+  <div class="controls-inner">
+    <span class="controls-brand">ratio.css</span>
+
+    <div class="control-group">
+      <span class="control-label">Base</span>
+      <input type="range" id="base-slider" min="0.5" max="2" step="0.05" value="1" />
+      <span class="control-value" id="base-val">1.00rem</span>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Ratio</span>
+      <input type="range" id="ratio-slider" min="1.1" max="2.0" step="0.001" value="1.618" />
+      <span class="control-value" id="ratio-val">1.618</span>
+    </div>
+
+    <div class="presets" id="presets"></div>
+
+    <button class="copy-btn" id="copy-btn" title="Copy CSS variables">Copy CSS</button>
+  </div>
+</div>
+
+<!-- ── Content ── -->
+<div class="content">
+
+  <!-- Scale -->
+  <section>
+    <div class="section-label">Scale — step(n) = base × ratio<sup>n</sup></div>
+    <div class="scale-display" id="scale-display"></div>
+    <div class="scale-labels" id="scale-labels"></div>
+  </section>
+
+  <!-- Components in 2-col grid -->
+  <div class="demo-grid">
+
+    <!-- Buttons -->
+    <section>
+      <div class="section-label">Button</div>
+      <div class="flex flex-wrap gap-3 items-center">
+        <button class="btn btn-sm btn-primary">Small</button>
+        <button class="btn btn-primary">Default</button>
+        <button class="btn btn-lg btn-primary">Large</button>
+      </div>
+      <div class="flex flex-wrap gap-3 items-center mt-3">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-outline-demo">Outline</button>
+        <button class="btn btn-ghost-demo">Ghost</button>
+      </div>
+    </section>
+
+    <!-- Inputs -->
+    <section>
+      <div class="section-label">Input</div>
+      <div class="stack-sm">
+        <input class="input input-sm" placeholder="Small input" />
+        <input class="input" placeholder="Default input" />
+        <input class="input input-lg" placeholder="Large input" />
+      </div>
+    </section>
+
+    <!-- Card -->
+    <section>
+      <div class="section-label">Card</div>
+      <div class="card">
+        <div class="card-title">Proportional</div>
+        <div class="card-body">Every dimension is f(x, y). Move the sliders above to see it all rescale.</div>
+        <div class="card-footer flex gap-2">
+          <button class="btn btn-sm btn-primary">Action</button>
+          <span class="badge badge-green">Live</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Badges + Alert -->
+    <section>
+      <div class="section-label">Badge &amp; Alert</div>
+      <div class="flex flex-wrap gap-2 mb-4">
+        <span class="badge badge-demo">φ = 1.618</span>
+        <span class="badge badge-green">Verified</span>
+      </div>
+      <div class="alert alert-demo">
+        <div class="alert-title">Geometric Scale</div>
+        All spacing derives from step(n) = base × ratio<sup>n</sup>
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section>
+      <div class="section-label">Headings</div>
+      <div class="stack-sm">
+        <div class="h1">h1 — s-5</div>
+        <div class="h2">h2 — s-4</div>
+        <div class="h3">h3 — s-3</div>
+        <div class="h4">h4 — s-2</div>
+        <div class="h5">h5 — s-1</div>
+      </div>
+    </section>
+
+    <!-- Avatar + Tabs + Breadcrumb -->
+    <section>
+      <div class="section-label">Avatar / Tabs / Breadcrumb</div>
+      <div class="flex gap-3 items-center mb-4">
+        <div class="avatar avatar-sm">S</div>
+        <div class="avatar">M</div>
+        <div class="avatar avatar-lg">L</div>
+      </div>
+      <div class="tabs mb-4">
+        <button class="tab tab-active">Active</button>
+        <button class="tab">Tab 2</button>
+        <button class="tab">Tab 3</button>
+      </div>
+      <nav class="breadcrumb">
+        <a href="#">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="#">Docs</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Config</span>
+      </nav>
+    </section>
+  </div>
+
+  <!-- Computed Values Table -->
+  <section>
+    <div class="section-label">Computed Values</div>
+    <table class="values-table" id="values-table">
+      <thead>
+        <tr><th>Step</th><th>Formula</th><th>rem</th><th>px (16px base)</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+</div>
+
+<script>
+const PRESETS = {
+  'φ Golden': 1.618033988749895,
+  '√2': 1.4142135623730951,
+  'Min 3rd': 1.2,
+  'Maj 3rd': 1.25,
+  '4th': 1.3333333333333333,
+  '5th': 1.5,
+};
+
+const baseSlider = document.getElementById('base-slider');
+const ratioSlider = document.getElementById('ratio-slider');
+const baseVal = document.getElementById('base-val');
+const ratioVal = document.getElementById('ratio-val');
+const presetsEl = document.getElementById('presets');
+const copyBtn = document.getElementById('copy-btn');
+const scaleDisplay = document.getElementById('scale-display');
+const scaleLabels = document.getElementById('scale-labels');
+const valuesTable = document.getElementById('values-table').querySelector('tbody');
+
+// Build preset buttons
+for (const [name, value] of Object.entries(PRESETS)) {
+  const btn = document.createElement('button');
+  btn.className = 'preset-btn' + (Math.abs(value - 1.618) < 0.01 ? ' active' : '');
+  btn.textContent = name;
+  btn.onclick = () => {
+    ratioSlider.value = value;
+    update();
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+  presetsEl.appendChild(btn);
+}
+
+function update() {
+  const base = parseFloat(baseSlider.value);
+  const ratio = parseFloat(ratioSlider.value);
+  const sqrtRatio = Math.sqrt(ratio);
+
+  // Update display
+  baseVal.textContent = base.toFixed(2) + 'rem';
+  ratioVal.textContent = ratio.toFixed(3);
+
+  // Update CSS custom properties
+  const root = document.documentElement.style;
+  root.setProperty('--base', base + 'rem');
+  root.setProperty('--ratio', ratio);
+  root.setProperty('--sqrt-ratio', sqrtRatio);
+
+  // Update preset active state
+  let found = false;
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    const presetVal = PRESETS[btn.textContent];
+    if (Math.abs(presetVal - ratio) < 0.005) {
+      btn.classList.add('active');
+      found = true;
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Rebuild scale visualization
+  const steps = [];
+  for (let n = -4; n <= 9; n++) {
+    steps.push({ n, value: base * Math.pow(ratio, n) });
+  }
+  const maxVal = steps[steps.length - 1].value;
+
+  scaleDisplay.innerHTML = steps.map(s => {
+    const h = Math.max(6, (Math.log(s.value + 0.5) / Math.log(maxVal + 0.5)) * 90);
+    return `<div class="scale-step" style="height:${h}px"><span class="tip">${s.value.toFixed(3)}rem</span></div>`;
+  }).join('');
+
+  scaleLabels.innerHTML = steps.map(s => {
+    const label = s.n < 0 ? `n${Math.abs(s.n)}` : `${s.n}`;
+    return `<span>${label}</span>`;
+  }).join('');
+
+  // Rebuild values table
+  valuesTable.innerHTML = steps.map(s => {
+    const label = s.n < 0 ? `--s-n${Math.abs(s.n)}` : `--s-${s.n}`;
+    const formula = s.n === 0 ? 'base' : s.n > 0 ? `base × ratio^${s.n}` : `base × ratio^(${s.n})`;
+    return `<tr><td>${label}</td><td>${formula}</td><td>${s.value.toFixed(4)}</td><td>${(s.value * 16).toFixed(1)}px</td></tr>`;
+  }).join('');
+
+  // Add derived values
+  const vPad = sqrtRatio / (ratio * ratio);
+  const hPad = base / ratio;
+  const radius = base * sqrtRatio;
+  valuesTable.innerHTML += `
+    <tr style="border-top: 2px solid var(--border);">
+      <td>--v-pad</td><td>√y / y²</td><td>${vPad.toFixed(4)}</td><td>${(vPad * 16).toFixed(1)}px</td>
+    </tr>
+    <tr><td>--h-pad</td><td>x / y</td><td>${hPad.toFixed(4)}</td><td>${(hPad * 16).toFixed(1)}px</td></tr>
+    <tr><td>--radius</td><td>x · √y</td><td>${radius.toFixed(4)}</td><td>${(radius * 16).toFixed(1)}px</td></tr>
+  `;
+}
+
+// Copy CSS
+copyBtn.onclick = () => {
+  const base = parseFloat(baseSlider.value);
+  const ratio = parseFloat(ratioSlider.value);
+  const sqrtRatio = Math.sqrt(ratio);
+
+  let css = ':root {\n';
+  css += `  --base: ${base}rem;\n`;
+  css += `  --ratio: ${ratio};\n`;
+  css += `  --sqrt-ratio: ${sqrtRatio.toFixed(6)};\n`;
+  css += '}\n';
+
+  navigator.clipboard.writeText(css).then(() => {
+    copyBtn.textContent = 'Copied!';
+    copyBtn.classList.add('copied');
+    setTimeout(() => {
+      copyBtn.textContent = 'Copy CSS';
+      copyBtn.classList.remove('copied');
+    }, 2000);
+  });
+};
+
+// Event listeners
+baseSlider.oninput = update;
+ratioSlider.oninput = update;
+
+// Initial render
+update();
+</script>
+</body>
+</html>

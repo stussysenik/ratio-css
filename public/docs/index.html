@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ratio.css — Documentation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/ratio.css">
+<style>
+  /* ── Layout Shell ── */
+  html { scroll-behavior: smooth; }
+  body { display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 240px;
+    background: var(--layer-01);
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: var(--s-1) var(--s-0);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .sidebar-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-1);
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    display: block;
+    text-decoration: none;
+  }
+
+  .sidebar-version {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n3);
+    color: var(--text-placeholder);
+    margin-top: var(--s-n4);
+    display: block;
+  }
+
+  .sidebar-search {
+    padding: var(--s-n2) var(--s-0);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .sidebar-search input {
+    width: 100%;
+    padding: var(--s-n3) var(--s-n2);
+    font-size: var(--s-n2);
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--field);
+    border: none;
+    border-bottom: 1px solid var(--border-strong);
+    border-radius: 0;
+    outline: none;
+  }
+
+  .sidebar-search input::placeholder { color: var(--text-placeholder); }
+  .sidebar-search input:focus { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: var(--s-n2) 0;
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    display: block;
+    padding: var(--s-n2) var(--s-0) var(--s-n4);
+    font-size: var(--s-n3);
+    font-weight: 600;
+    color: var(--text-placeholder);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-link {
+    display: block;
+    padding: var(--s-n3) var(--s-0);
+    padding-left: calc(var(--s-0) + var(--s-n2));
+    font-size: var(--s-n2);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: var(--layer-02);
+  }
+
+  .nav-link.active {
+    color: var(--interactive);
+    border-left-color: var(--interactive);
+    background: transparent;
+  }
+
+  .nav-link.hidden-by-search { display: none; }
+
+  .nav-external {
+    display: block;
+    padding: var(--s-n1) var(--s-0);
+    font-size: var(--s-n2);
+    font-weight: 500;
+    color: var(--interactive);
+    text-decoration: none;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: auto;
+  }
+
+  .nav-external:hover { text-decoration: underline; }
+
+  /* ── Main Content ── */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    padding: var(--s-2) var(--s-2);
+    overflow-y: auto;
+  }
+
+  .main-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* ── Section Spacing ── */
+  .doc-section {
+    margin-bottom: var(--s-2);
+  }
+
+  .doc-section + .doc-section {
+    padding-top: var(--s-2);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .doc-subsection {
+    margin-top: var(--s-1);
+  }
+
+  /* ── Headings ── */
+  .doc-section h2 {
+    font-size: var(--s-3);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: var(--s-0);
+  }
+
+  .doc-section h3 {
+    font-size: var(--s-2);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: var(--s-n1);
+  }
+
+  .doc-section h4 {
+    font-size: var(--s-1);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-bottom: var(--s-n2);
+  }
+
+  /* ── Body Text ── */
+  .doc-text {
+    font-size: var(--s-n1);
+    line-height: calc(1em * 1.618);
+    color: var(--text-secondary);
+    margin-bottom: var(--s-0);
+  }
+
+  .doc-text a {
+    color: var(--interactive);
+    text-decoration: none;
+  }
+
+  .doc-text a:hover { text-decoration: underline; }
+
+  /* ── Inline code ── */
+  .doc-text code,
+  .inline-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9em;
+    background: var(--field);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+    color: var(--text-primary);
+  }
+
+  /* ── Code Blocks ── */
+  .code-block-wrapper {
+    position: relative;
+    margin-bottom: var(--s-0);
+  }
+
+  .code-block {
+    background: var(--field);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n2);
+    line-height: 1.6;
+    padding: var(--s-0);
+    border-left: 3px solid var(--interactive);
+    border-radius: 0;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text-primary);
+    tab-size: 2;
+  }
+
+  .code-copy-btn {
+    position: absolute;
+    top: var(--s-n3);
+    right: var(--s-n3);
+    padding: var(--s-n4) var(--s-n2);
+    font-size: var(--s-n3);
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--layer-02);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 70ms;
+  }
+
+  .code-copy-btn:hover {
+    background: var(--layer-03);
+    color: var(--text-primary);
+  }
+
+  /* ── Callout (scale formula) ── */
+  .scale-callout {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n2);
+    background: var(--layer-01);
+    padding: var(--s-n1) var(--s-0);
+    border-left: 3px solid var(--support-info);
+    margin-bottom: var(--s-0);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── Demo Area ── */
+  .demo-area {
+    padding: var(--s-1);
+    background: var(--background);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: var(--s-n1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-n1);
+    align-items: flex-start;
+  }
+
+  /* ── Tables ── */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--s-n2);
+    margin-bottom: var(--s-0);
+  }
+
+  .doc-table th {
+    text-align: left;
+    padding: var(--s-n3) var(--s-n2);
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-subtle);
+    white-space: nowrap;
+  }
+
+  .doc-table td {
+    padding: var(--s-n3) var(--s-n2);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: top;
+  }
+
+  .doc-table tr:last-child td { border-bottom: none; }
+
+  .doc-table .token-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n2);
+    color: var(--interactive);
+  }
+
+  .doc-table .token-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n2);
+  }
+
+  .doc-table .token-desc {
+    color: var(--text-secondary);
+  }
+
+  .color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    border: 1px solid var(--border-subtle);
+    vertical-align: middle;
+    margin-right: var(--s-n3);
+  }
+
+  /* ── Scale Visualizer ── */
+  .scale-controls {
+    display: flex;
+    gap: var(--s-1);
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: var(--s-1);
+  }
+
+  .scale-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-n4);
+  }
+
+  .scale-control-group label {
+    font-size: var(--s-n2);
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  .scale-control-group input[type="range"] {
+    width: 200px;
+    accent-color: var(--interactive);
+  }
+
+  .scale-control-group .scale-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n2);
+    color: var(--interactive);
+  }
+
+  .preset-chips {
+    display: flex;
+    gap: var(--s-n3);
+    flex-wrap: wrap;
+    margin-bottom: var(--s-0);
+  }
+
+  .preset-chip {
+    padding: var(--s-n4) var(--s-n2);
+    font-size: var(--s-n3);
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--layer-01);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 70ms;
+  }
+
+  .preset-chip:hover {
+    background: var(--layer-02);
+    color: var(--text-primary);
+  }
+
+  .preset-chip.active {
+    background: var(--interactive);
+    color: var(--text-on-color);
+    border-color: var(--interactive);
+  }
+
+  .scale-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: var(--s-0);
+  }
+
+  .scale-bar-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-n2);
+    height: 24px;
+  }
+
+  .scale-bar-label {
+    width: 40px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n3);
+    color: var(--text-secondary);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .scale-bar {
+    height: 18px;
+    background: var(--interactive);
+    border-radius: 0 2px 2px 0;
+    min-width: 2px;
+    transition: width 200ms ease;
+    opacity: 0.8;
+  }
+
+  .scale-bar-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n3);
+    color: var(--text-placeholder);
+    flex-shrink: 0;
+  }
+
+  /* ── Utility Category ── */
+  .utility-group {
+    margin-bottom: var(--s-1);
+  }
+
+  .utility-group h4 {
+    font-size: var(--s-0);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--s-n2);
+    text-transform: capitalize;
+  }
+
+  .utility-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-n4);
+  }
+
+  .utility-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n3);
+    padding: var(--s-n4) var(--s-n2);
+    background: var(--layer-01);
+    color: var(--text-secondary);
+    border-radius: 2px;
+  }
+
+  /* ── Component Example Block ── */
+  .component-block {
+    margin-bottom: var(--s-2);
+  }
+
+  .component-block h3 {
+    font-size: var(--s-1);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-bottom: var(--s-n2);
+  }
+
+  .component-desc {
+    font-size: var(--s-n1);
+    color: var(--text-secondary);
+    margin-bottom: var(--s-n1);
+    line-height: calc(1em * 1.618);
+  }
+
+  .variant-list {
+    margin-bottom: var(--s-n1);
+  }
+
+  .variant-list dt {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--s-n2);
+    color: var(--interactive);
+    margin-top: var(--s-n3);
+  }
+
+  .variant-list dd {
+    font-size: var(--s-n2);
+    color: var(--text-secondary);
+    margin-left: 0;
+  }
+
+  .example-label {
+    font-size: var(--s-n3);
+    font-weight: 600;
+    color: var(--text-placeholder);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--s-n4);
+    margin-top: var(--s-n1);
+  }
+
+  /* ── Loading State ── */
+  .loading-skeleton {
+    background: var(--layer-01);
+    border-radius: 2px;
+    animation: pulse 1.5s ease-in-out infinite;
+    height: 16px;
+    margin-bottom: var(--s-n2);
+  }
+
+  .loading-skeleton.wide { width: 80%; }
+  .loading-skeleton.medium { width: 50%; }
+  .loading-skeleton.narrow { width: 30%; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     Sidebar
+     ══════════════════════════════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <a href="/docs" class="sidebar-brand">ratio.css</a>
+    <span class="sidebar-version">v0.2.0 — geometric scale</span>
+  </div>
+
+  <div class="sidebar-search">
+    <input type="text" id="sidebar-search" placeholder="Search docs..." autocomplete="off" spellcheck="false" />
+  </div>
+
+  <nav class="sidebar-nav" id="sidebar-nav">
+    <span class="nav-section-label">Overview</span>
+    <a href="#getting-started" class="nav-link" data-section="getting-started">Getting Started</a>
+    <a href="#scale-system" class="nav-link" data-section="scale-system">Scale System</a>
+
+    <span class="nav-section-label">Tokens</span>
+    <a href="#tokens-scale" class="nav-link" data-section="tokens-scale">Scale Tokens</a>
+    <a href="#tokens-color" class="nav-link" data-section="tokens-color">Color Tokens</a>
+
+    <span class="nav-section-label">Utilities</span>
+    <a href="#utilities-spacing" class="nav-link" data-section="utilities-spacing">Spacing</a>
+    <a href="#utilities-typography" class="nav-link" data-section="utilities-typography">Typography</a>
+    <a href="#utilities-layout" class="nav-link" data-section="utilities-layout">Layout</a>
+
+    <span class="nav-section-label">Components</span>
+    <a href="#comp-button" class="nav-link" data-section="comp-button">Button</a>
+    <a href="#comp-input" class="nav-link" data-section="comp-input">Input</a>
+    <a href="#comp-card" class="nav-link" data-section="comp-card">Card</a>
+    <a href="#comp-tag" class="nav-link" data-section="comp-tag">Tag</a>
+    <a href="#comp-notification" class="nav-link" data-section="comp-notification">Notification</a>
+    <a href="#comp-avatar" class="nav-link" data-section="comp-avatar">Avatar</a>
+    <a href="#comp-typography" class="nav-link" data-section="comp-typography">Typography</a>
+    <a href="#comp-tabs" class="nav-link" data-section="comp-tabs">Tabs</a>
+    <a href="#comp-breadcrumb" class="nav-link" data-section="comp-breadcrumb">Breadcrumb</a>
+    <a href="#comp-toggle" class="nav-link" data-section="comp-toggle">Toggle</a>
+    <a href="#comp-stack" class="nav-link" data-section="comp-stack">Stack</a>
+    <a href="#comp-divider" class="nav-link" data-section="comp-divider">Divider</a>
+
+    <a href="/swagger" class="nav-external" target="_blank">Swagger API &rarr;</a>
+  </nav>
+</aside>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     Main Content
+     ══════════════════════════════════════════════════════════════════════ -->
+<main class="main">
+<div class="main-inner">
+
+  <!-- ── Getting Started ── -->
+  <section class="doc-section" id="getting-started">
+    <h2>Getting Started</h2>
+    <p class="doc-text">
+      <strong>ratio.css</strong> is a geometric ratio-based CSS framework built on IBM Carbon design tokens.
+      Every dimension in the system derives from two variables: a base unit and a scale ratio.
+    </p>
+
+    <h4>Install</h4>
+    <div class="code-block-wrapper">
+      <pre class="code-block">&lt;link rel="stylesheet" href="ratio.css"&gt;</pre>
+      <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+
+    <h4>The Concept</h4>
+    <p class="doc-text">
+      Every scale step is computed from one formula:
+    </p>
+    <div class="scale-callout">step(n) = base &times; ratio<sup>n</sup></div>
+    <p class="doc-text">
+      The default base is <code>1rem</code> and the default ratio is <code>&phi; (1.618)</code> &mdash; the golden ratio.
+      This produces a harmonious scale where each step is proportionally related to every other step.
+      Spacing, typography, sizing, and component dimensions all reference the same scale.
+    </p>
+
+    <h4>Quick Example</h4>
+    <div class="demo-area">
+      <button class="btn">Primary Action</button>
+      <button class="btn btn-secondary">Secondary</button>
+      <button class="btn btn-ghost">Ghost</button>
+    </div>
+    <div class="code-block-wrapper">
+      <pre class="code-block">&lt;button class="btn"&gt;Primary Action&lt;/button&gt;
+&lt;button class="btn btn-secondary"&gt;Secondary&lt;/button&gt;
+&lt;button class="btn btn-ghost"&gt;Ghost&lt;/button&gt;</pre>
+      <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+  </section>
+
+  <!-- ── Scale System ── -->
+  <section class="doc-section" id="scale-system">
+    <h2>Scale System</h2>
+    <p class="doc-text">
+      The scale generates steps from <code>-4</code> to <code>+9</code>, each one a power of the ratio.
+      Adjust the base and ratio below to see how dimensions change.
+    </p>
+
+    <div id="scale-presets" class="preset-chips">
+      <!-- Filled by JS -->
+    </div>
+
+    <div class="scale-controls">
+      <div class="scale-control-group">
+        <label>Base (rem)</label>
+        <input type="range" id="scale-base" min="0.5" max="2" step="0.05" value="1" />
+        <span class="scale-value" id="scale-base-val">1.000</span>
+      </div>
+      <div class="scale-control-group">
+        <label>Ratio</label>
+        <input type="range" id="scale-ratio" min="1.05" max="2.5" step="0.001" value="1.618" />
+        <span class="scale-value" id="scale-ratio-val">1.618</span>
+      </div>
+    </div>
+
+    <div id="scale-bars" class="scale-bars">
+      <!-- Filled by JS -->
+    </div>
+
+    <h4>Computed Values</h4>
+    <table class="doc-table" id="scale-table">
+      <thead>
+        <tr><th>Step</th><th>Token</th><th>rem</th><th>px</th></tr>
+      </thead>
+      <tbody>
+        <!-- Filled by JS -->
+      </tbody>
+    </table>
+
+    <div id="scale-css-output" class="code-block-wrapper" style="margin-top: var(--s-0);">
+      <!-- Filled by JS -->
+    </div>
+  </section>
+
+  <!-- ── Tokens: Scale ── -->
+  <section class="doc-section" id="tokens-scale">
+    <h2>Scale Tokens</h2>
+    <p class="doc-text">
+      CSS custom properties that define the geometric scale steps, base configuration, and derived values like padding and radius.
+    </p>
+    <div id="tokens-scale-content">
+      <div class="loading-skeleton wide"></div>
+      <div class="loading-skeleton medium"></div>
+      <div class="loading-skeleton wide"></div>
+    </div>
+  </section>
+
+  <!-- ── Tokens: Color ── -->
+  <section class="doc-section" id="tokens-color">
+    <h2>Color Tokens</h2>
+    <p class="doc-text">
+      IBM Carbon Gray 100 theme color tokens. All component and utility colors reference these properties.
+    </p>
+    <div id="tokens-color-content">
+      <div class="loading-skeleton wide"></div>
+      <div class="loading-skeleton medium"></div>
+      <div class="loading-skeleton wide"></div>
+    </div>
+  </section>
+
+  <!-- ── Utilities: Spacing ── -->
+  <section class="doc-section" id="utilities-spacing">
+    <h2>Spacing Utilities</h2>
+    <p class="doc-text">
+      Padding, margin, and gap classes mapped to scale steps. Level 0 = zero, levels 1-9 map to steps <code>--s-n3</code> through <code>--s-5</code>.
+    </p>
+    <div id="utilities-spacing-content">
+      <div class="loading-skeleton wide"></div>
+      <div class="loading-skeleton medium"></div>
+    </div>
+  </section>
+
+  <!-- ── Utilities: Typography ── -->
+  <section class="doc-section" id="utilities-typography">
+    <h2>Typography Utilities</h2>
+    <p class="doc-text">
+      Font size, weight, alignment, line height, and letter spacing classes.
+    </p>
+    <div id="utilities-typography-content">
+      <div class="loading-skeleton wide"></div>
+      <div class="loading-skeleton medium"></div>
+    </div>
+  </section>
+
+  <!-- ── Utilities: Layout ── -->
+  <section class="doc-section" id="utilities-layout">
+    <h2>Layout Utilities</h2>
+    <p class="doc-text">
+      Flexbox, grid, display, positioning, border radius, sizing, and miscellaneous utility classes.
+    </p>
+    <div id="utilities-layout-content">
+      <div class="loading-skeleton wide"></div>
+      <div class="loading-skeleton medium"></div>
+    </div>
+  </section>
+
+  <!-- ── Components (rendered by JS) ── -->
+  <div id="components-container">
+    <!-- Each component section inserted here -->
+  </div>
+
+</div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────
+  //  Utility: copy code to clipboard
+  // ─────────────────────────────────────────────────────────────
+  window.copyCode = function (btn) {
+    const wrapper = btn.closest('.code-block-wrapper');
+    const pre = wrapper.querySelector('.code-block');
+    const text = pre.textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+    });
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  //  Helpers
+  // ─────────────────────────────────────────────────────────────
+  function escapeHTML(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function codeBlock(code) {
+    return '<div class="code-block-wrapper">' +
+      '<pre class="code-block">' + escapeHTML(code) + '</pre>' +
+      '<button class="code-copy-btn" onclick="copyCode(this)">Copy</button>' +
+      '</div>';
+  }
+
+  function slugify(name) {
+    return 'comp-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  Sidebar search
+  // ─────────────────────────────────────────────────────────────
+  var searchInput = document.getElementById('sidebar-search');
+  var navLinks = document.querySelectorAll('.nav-link');
+
+  searchInput.addEventListener('input', function () {
+    var q = this.value.toLowerCase().trim();
+    navLinks.forEach(function (link) {
+      if (!q) {
+        link.classList.remove('hidden-by-search');
+      } else {
+        var text = link.textContent.toLowerCase();
+        link.classList.toggle('hidden-by-search', text.indexOf(q) === -1);
+      }
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  //  Active sidebar link on scroll
+  // ─────────────────────────────────────────────────────────────
+  var sectionIds = [];
+  navLinks.forEach(function (link) {
+    var id = link.getAttribute('data-section');
+    if (id) sectionIds.push(id);
+  });
+
+  function updateActiveLink() {
+    var scrollY = window.scrollY + 100;
+    var current = '';
+    sectionIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollY) {
+        current = id;
+      }
+    });
+    navLinks.forEach(function (link) {
+      link.classList.toggle('active', link.getAttribute('data-section') === current);
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveLink, { passive: true });
+  updateActiveLink();
+
+  // ─────────────────────────────────────────────────────────────
+  //  Fetch API data
+  // ─────────────────────────────────────────────────────────────
+  var apiData = {};
+
+  function fetchJSON(url) {
+    return fetch(url).then(function (r) { return r.json(); });
+  }
+
+  function postJSON(url, body) {
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }).then(function (r) { return r.json(); });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  Render: Tokens
+  // ─────────────────────────────────────────────────────────────
+  function isColorValue(val) {
+    return /^#[0-9a-f]{3,8}$/i.test(val);
+  }
+
+  function renderTokenTable(tokens, containerId) {
+    var container = document.getElementById(containerId);
+    if (!tokens || tokens.length === 0) {
+      container.innerHTML = '<p class="doc-text">No tokens found.</p>';
+      return;
+    }
+
+    // Group by category
+    var groups = {};
+    tokens.forEach(function (t) {
+      var cat = t.category || 'other';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(t);
+    });
+
+    var html = '';
+    Object.keys(groups).forEach(function (cat) {
+      html += '<h4 style="text-transform:capitalize;margin-top:var(--s-0);margin-bottom:var(--s-n2)">' + escapeHTML(cat) + '</h4>';
+      html += '<table class="doc-table"><thead><tr>';
+      html += '<th>Token</th><th>Value</th><th>Description</th>';
+      html += '</tr></thead><tbody>';
+      groups[cat].forEach(function (t) {
+        var valueCellContent = '';
+        if (isColorValue(t.value)) {
+          valueCellContent = '<span class="color-swatch" style="background:' + t.value + '"></span>';
+        }
+        valueCellContent += '<span class="token-value">' + escapeHTML(t.value) + '</span>';
+        if (t.formula) {
+          valueCellContent += ' <span style="color:var(--text-placeholder);font-size:var(--s-n3)">(' + escapeHTML(t.formula) + ')</span>';
+        }
+        html += '<tr>';
+        html += '<td class="token-name">' + escapeHTML(t.name) + '</td>';
+        html += '<td>' + valueCellContent + '</td>';
+        html += '<td class="token-desc">' + escapeHTML(t.description) + '</td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  Render: Scale System
+  // ─────────────────────────────────────────────────────────────
+  var currentBase = 1;
+  var currentRatio = 1.618;
+  var presets = null;
+
+  function renderScaleBars(steps) {
+    var barsEl = document.getElementById('scale-bars');
+    var tableBody = document.querySelector('#scale-table tbody');
+    var cssOutput = document.getElementById('scale-css-output');
+
+    if (!steps || !steps.steps) return;
+
+    var maxPx = 0;
+    steps.steps.forEach(function (s) {
+      if (s.px > maxPx) maxPx = s.px;
+    });
+    // Cap the bar visualization at 400px for readability
+    var barScale = Math.min(400, 600) / Math.max(maxPx, 1);
+
+    var barsHTML = '';
+    var tableHTML = '';
+
+    steps.steps.forEach(function (s) {
+      var barWidth = Math.max(2, s.px * barScale);
+      barsHTML += '<div class="scale-bar-row">' +
+        '<span class="scale-bar-label">' + s.label + '</span>' +
+        '<div class="scale-bar" style="width:' + barWidth + 'px"></div>' +
+        '<span class="scale-bar-value">' + s.value.toFixed(3) + 'rem</span>' +
+        '</div>';
+
+      tableHTML += '<tr>' +
+        '<td>' + s.index + '</td>' +
+        '<td class="token-name">--' + s.label + '</td>' +
+        '<td class="token-value">' + s.value.toFixed(4) + '</td>' +
+        '<td class="token-value">' + s.px + '</td>' +
+        '</tr>';
+    });
+
+    barsEl.innerHTML = barsHTML;
+    tableBody.innerHTML = tableHTML;
+
+    if (steps.css) {
+      cssOutput.innerHTML = '<h4 style="margin-bottom:var(--s-n2)">CSS Custom Properties</h4>' + codeBlock(steps.css);
+    }
+  }
+
+  function updateScale() {
+    var baseInput = document.getElementById('scale-base');
+    var ratioInput = document.getElementById('scale-ratio');
+    currentBase = parseFloat(baseInput.value);
+    currentRatio = parseFloat(ratioInput.value);
+
+    document.getElementById('scale-base-val').textContent = currentBase.toFixed(3);
+    document.getElementById('scale-ratio-val').textContent = currentRatio.toFixed(3);
+
+    // Update preset chip active state
+    if (presets) {
+      document.querySelectorAll('.preset-chip').forEach(function (chip) {
+        var presetRatio = parseFloat(chip.getAttribute('data-ratio'));
+        chip.classList.toggle('active', Math.abs(presetRatio - currentRatio) < 0.002);
+      });
+    }
+
+    postJSON('/api/scale', { base: currentBase, ratio: currentRatio })
+      .then(renderScaleBars)
+      .catch(function (err) { console.error('Scale fetch error:', err); });
+  }
+
+  document.getElementById('scale-base').addEventListener('input', updateScale);
+  document.getElementById('scale-ratio').addEventListener('input', updateScale);
+
+  function renderPresets(data) {
+    presets = data;
+    var container = document.getElementById('scale-presets');
+    var html = '';
+    Object.keys(data).forEach(function (key) {
+      var p = data[key];
+      var isActive = Math.abs(p.ratio - currentRatio) < 0.002;
+      html += '<button class="preset-chip' + (isActive ? ' active' : '') + '" data-ratio="' + p.ratio + '" ' +
+        'title="' + escapeHTML(p.origin || '') + '">' +
+        escapeHTML(p.name) +
+        '</button>';
+    });
+    container.innerHTML = html;
+
+    container.querySelectorAll('.preset-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var r = parseFloat(this.getAttribute('data-ratio'));
+        document.getElementById('scale-ratio').value = r;
+        currentRatio = r;
+        updateScale();
+      });
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  Render: Utilities
+  // ─────────────────────────────────────────────────────────────
+  function renderSpacingUtilities(data) {
+    var container = document.getElementById('utilities-spacing-content');
+    var spacing = data.spacing;
+    if (!spacing) { container.innerHTML = '<p class="doc-text">No data.</p>'; return; }
+
+    var html = '';
+    Object.keys(spacing).forEach(function (group) {
+      var items = spacing[group];
+      html += '<div class="utility-group"><h4>' + escapeHTML(group) + '</h4>';
+      html += '<table class="doc-table"><thead><tr><th>Class</th><th>Value</th><th>Step</th></tr></thead><tbody>';
+      items.forEach(function (item) {
+        var cls = typeof item === 'string' ? item : item.class;
+        var val = item.value || '';
+        var step = item.step != null ? item.step : '';
+        html += '<tr>' +
+          '<td class="token-name">' + escapeHTML(cls) + '</td>' +
+          '<td class="token-value">' + escapeHTML(val) + '</td>' +
+          '<td>' + escapeHTML(String(step)) + '</td>' +
+          '</tr>';
+      });
+      html += '</tbody></table></div>';
+    });
+    container.innerHTML = html;
+  }
+
+  function renderTypographyUtilities(data) {
+    var container = document.getElementById('utilities-typography-content');
+    var typo = data.typography;
+    if (!typo) { container.innerHTML = '<p class="doc-text">No data.</p>'; return; }
+
+    var html = '';
+    Object.keys(typo).forEach(function (group) {
+      var items = typo[group];
+      html += '<div class="utility-group"><h4>' + escapeHTML(group) + '</h4>';
+      if (Array.isArray(items) && typeof items[0] === 'string') {
+        html += '<div class="utility-pills">';
+        items.forEach(function (cls) {
+          html += '<span class="utility-pill">' + escapeHTML(cls) + '</span>';
+        });
+        html += '</div>';
+      } else {
+        html += '<table class="doc-table"><thead><tr><th>Class</th><th>Step / Value</th></tr></thead><tbody>';
+        items.forEach(function (item) {
+          var cls = item.class || item;
+          var val = item.step || item.value || '';
+          html += '<tr>' +
+            '<td class="token-name">' + escapeHTML(cls) + '</td>' +
+            '<td class="token-value">' + escapeHTML(String(val)) + '</td>' +
+            '</tr>';
+        });
+        html += '</tbody></table>';
+      }
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  function renderLayoutUtilities(data) {
+    var container = document.getElementById('utilities-layout-content');
+    var html = '';
+
+    // Layout
+    if (data.layout) {
+      Object.keys(data.layout).forEach(function (group) {
+        html += '<div class="utility-group"><h4>' + escapeHTML(group) + '</h4>';
+        html += '<div class="utility-pills">';
+        data.layout[group].forEach(function (cls) {
+          html += '<span class="utility-pill">' + escapeHTML(cls) + '</span>';
+        });
+        html += '</div></div>';
+      });
+    }
+
+    // Border Radius
+    if (data.borderRadius) {
+      html += '<div class="utility-group"><h4>Border Radius</h4>';
+      html += '<div class="utility-pills">';
+      data.borderRadius.forEach(function (cls) {
+        html += '<span class="utility-pill">' + escapeHTML(cls) + '</span>';
+      });
+      html += '</div></div>';
+    }
+
+    // Sizing
+    if (data.sizing) {
+      Object.keys(data.sizing).forEach(function (group) {
+        html += '<div class="utility-group"><h4>' + escapeHTML(group) + '</h4>';
+        html += '<div class="utility-pills">';
+        data.sizing[group].forEach(function (cls) {
+          html += '<span class="utility-pill">' + escapeHTML(cls) + '</span>';
+        });
+        html += '</div></div>';
+      });
+    }
+
+    // Positioning
+    if (data.positioning) {
+      html += '<div class="utility-group"><h4>Positioning</h4>';
+      html += '<div class="utility-pills">';
+      data.positioning.forEach(function (cls) {
+        html += '<span class="utility-pill">' + escapeHTML(cls) + '</span>';
+      });
+      html += '</div></div>';
+    }
+
+    // Misc
+    if (data.misc) {
+      html += '<div class="utility-group"><h4>Miscellaneous</h4>';
+      html += '<div class="utility-pills">';
+      data.misc.forEach(function (cls) {
+        html += '<span class="utility-pill">' + escapeHTML(cls) + '</span>';
+      });
+      html += '</div></div>';
+    }
+
+    container.innerHTML = html;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  Render: Components
+  // ─────────────────────────────────────────────────────────────
+  function renderComponents(components) {
+    var container = document.getElementById('components-container');
+    if (!components || components.length === 0) {
+      container.innerHTML = '<p class="doc-text">No components found.</p>';
+      return;
+    }
+
+    var html = '';
+    components.forEach(function (comp) {
+      var id = slugify(comp.name);
+      html += '<section class="doc-section component-block" id="' + id + '">';
+      html += '<h3>' + escapeHTML(comp.name) + ' <span class="inline-code">' + escapeHTML(comp.baseClass) + '</span></h3>';
+      html += '<p class="component-desc">' + escapeHTML(comp.description) + '</p>';
+
+      // Scale formula callout
+      html += '<div class="scale-callout">' + escapeHTML(comp.scaleFormula) + '</div>';
+
+      // Variants
+      if (comp.variants && comp.variants.length > 0) {
+        html += '<dl class="variant-list">';
+        comp.variants.forEach(function (v) {
+          html += '<dt>' + escapeHTML(v.class) + '</dt>';
+          html += '<dd>' + escapeHTML(v.description) + '</dd>';
+        });
+        html += '</dl>';
+      }
+
+      // Sizes
+      if (comp.sizes && comp.sizes.length > 0) {
+        html += '<p class="doc-text" style="margin-bottom:var(--s-n2)"><strong>Sizes:</strong> ' +
+          comp.sizes.map(function (s) { return '<code>' + escapeHTML(s) + '</code>'; }).join(', ') +
+          '</p>';
+      }
+
+      // Examples
+      if (comp.examples) {
+        Object.keys(comp.examples).forEach(function (key) {
+          var exHTML = comp.examples[key];
+          html += '<div class="example-label">' + escapeHTML(key) + '</div>';
+          html += '<div class="demo-area">' + exHTML + '</div>';
+          html += codeBlock(exHTML);
+        });
+      }
+
+      html += '</section>';
+    });
+
+    container.innerHTML = html;
+
+    // Update section IDs for scroll tracking
+    sectionIds = [];
+    document.querySelectorAll('.nav-link').forEach(function (link) {
+      var id = link.getAttribute('data-section');
+      if (id) sectionIds.push(id);
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  //  Boot: fetch everything in parallel
+  // ─────────────────────────────────────────────────────────────
+  Promise.all([
+    fetchJSON('/api/tokens'),
+    fetchJSON('/api/components'),
+    fetchJSON('/api/utilities'),
+    fetchJSON('/api/scale/presets'),
+    postJSON('/api/scale', { base: currentBase, ratio: currentRatio }),
+  ]).then(function (results) {
+    var tokens = results[0];
+    var components = results[1];
+    var utilities = results[2];
+    var presetsData = results[3];
+    var scaleData = results[4];
+
+    apiData = { tokens: tokens, components: components, utilities: utilities, presets: presetsData };
+
+    // Render tokens
+    var scaleAndDerived = (tokens.scale || []).concat(tokens.derived || []);
+    renderTokenTable(scaleAndDerived, 'tokens-scale-content');
+    renderTokenTable(tokens.color || [], 'tokens-color-content');
+
+    // Render presets + scale
+    renderPresets(presetsData);
+    renderScaleBars(scaleData);
+
+    // Render utilities
+    renderSpacingUtilities(utilities);
+    renderTypographyUtilities(utilities);
+    renderLayoutUtilities(utilities);
+
+    // Render components
+    renderComponents(components);
+
+    // Re-run active link detection after content is rendered
+    updateActiveLink();
+
+  }).catch(function (err) {
+    console.error('Failed to load API data:', err);
+    document.querySelectorAll('[id$="-content"]').forEach(function (el) {
+      el.innerHTML = '<p class="doc-text" style="color:var(--support-error)">Failed to load data. Is the server running?</p>';
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
