@@ -42,6 +42,9 @@ Every padding, margin, font-size, gap, border-radius, and component dimension de
 
 ## Screenshots
 
+![Demo](demo.gif)
+
+
 ### Documentation (Puter-style)
 ![Docs](screenshots/docs.png)
 
